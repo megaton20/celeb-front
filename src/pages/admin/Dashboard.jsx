@@ -6,6 +6,7 @@ import { FaBars, FaUsers, FaTrophy, FaChartBar } from "react-icons/fa";
 import Sidebar from "./components/SideBar";
 import Button from "../../components/Button";
 
+
 function AdminPanel() {
   const [data, setData] = useState(null);
   const navigate = useNavigate()
@@ -16,10 +17,9 @@ function AdminPanel() {
           .then((response) => {
             setData(response.data);
           })
-          .catch(()=> navigate("/login"));
+          .catch(()=> navigate("/auth/login"));
         }, [navigate]);
         
-        console.log(data);
       
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loadingRows, setLoadingRows] = useState({}); // Track loading per row
@@ -53,7 +53,7 @@ function AdminPanel() {
         <h1 className="text-3xl font-bold text-yellow-500">Dashboard</h1>
 
         {/* Stats Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg flex items-center space-x-4">
             <FaUsers className="text-yellow-500 text-4xl" />
             <div>
@@ -61,6 +61,15 @@ function AdminPanel() {
               <p className="text-gray-400 text-lg">{data.allContendersResult.length}</p>
             </div>
           </div>
+
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg flex items-center space-x-4">
+            <FaUsers className="text-yellow-500 text-4xl" />
+            <div>
+              <h2 className="text-xl font-bold">Total Voters</h2>
+              <p className="text-gray-400 text-lg">{data.users.length}</p>
+            </div>
+          </div>
+
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg flex items-center space-x-4">
             <FaTrophy className="text-yellow-500 text-4xl" />
             <div>

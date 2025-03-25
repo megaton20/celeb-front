@@ -65,7 +65,7 @@ function Home() {
 
         <div className="flex gap-6 mb-6">
           {/* Register Button */}
-          <Link to="/register" className="px-6 py-3 bg-yellow-500 text-black text-xl font-bold rounded-lg shadow-lg hover:bg-yellow-600 transition"> Join Contest
+          <Link to="/contest/register" className="px-6 py-3 bg-yellow-500 text-black text-xl font-bold rounded-lg shadow-lg hover:bg-yellow-600 transition"> Join Contest
           </Link>
 
           {/* Play Button */}

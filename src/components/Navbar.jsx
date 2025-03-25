@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import  "../styles/style.css"
+import { AuthContext } from "./AuthContext";
 // import ThemeToggle from "../components/ThemeToggle";
 
 function Navbar() {
+  const authContext = useContext(AuthContext);
+  const { passedUser, loading } = authContext;
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -25,10 +28,23 @@ function Navbar() {
           <Link to="/contestants" className="hover:text-blue-200">Contestants</Link>
           <Link to="/fixtures" className="hover:text-blue-200">Fixtures</Link>
           <Link to="/rankings" className="hover:text-blue-200">Rank</Link>
-          <Link to="/profile" className="hover:text-blue-200">Profile</Link>
-          {/* <Link to="/register" className="hover:text-blue-200">Create User</Link> */}
-          <Link to="/login" className="hover:text-blue-200">sign in</Link>
-          <Link to="/admin/dashboard" className="hover:text-blue-200">dashboard</Link>
+
+          { !passedUser && !loading && (
+            <>
+            <Link to="/auth/register" className="hover:text-blue-200">Sign up</Link>
+          <Link to="/auth/login" className="hover:text-blue-200">sign in</Link>
+            </>
+
+            )}
+            { passedUser && (
+            <>
+            <Link to="/profile" className="hover:text-blue-200">Profile</Link>
+            <Link to="/admin/dashboard" className="hover:text-blue-200">Dashboard</Link>
+            </>
+
+            )}
+            
+          {/* <Link to="/admin/dashboard" className="hover:text-blue-200">dashboard</Link> */}
           {/* <ThemeToggle /> */}
         </div>
       </div>

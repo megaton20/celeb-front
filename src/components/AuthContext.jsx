@@ -11,18 +11,27 @@ export function AuthProvider({ children }) {
     axios
       .get("http://localhost:4000/auth", { withCredentials: true })
       .then((res) => {
-        console.log("✅ Authenticated User:", res.data);
-        setPassedUser(res.data.user || null);
+        setPassedUser(res.data.authenticated || false);
       })
       .catch((err) => {
         console.error("❌ Auth Fetch Error:", err);
-        setPassedUser(null);
+        setPassedUser(false);
       })
       .finally(() => setLoading(false));
   }, []);
 
+  // ✅ Fix: Move logout inside AuthProvider
+  const logout = async () => {
+    try {
+      await axios.post("http://localhost:4000/auth/logout", {}, { withCredentials: true });
+      setPassedUser(false); // Update state after logout
+    } catch (error) {
+      console.error("❌ Logout Failed:", error);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ passedUser, setPassedUser, loading }}>
+    <AuthContext.Provider value={{ passedUser, setPassedUser, loading, logout }}>
       {children}
     </AuthContext.Provider>
   );
