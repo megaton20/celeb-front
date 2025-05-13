@@ -13,7 +13,7 @@ function ContestantList() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:4000/contestants/")
+      .get("http://localhost:4000/admin/contestants/")
       .then((response) => {
         setContestants(response.data.data);
       })
@@ -76,8 +76,16 @@ function ContestantList() {
                   <td className="py-4 px-6"> {each.points} </td>
                   <td className="py-4 px-6"> {each.vote_count} </td>
                   <td className="py-4 px-6">
-                    <Button onClick={handleClick} loading={loading} type={"bg-red-500"}> Remove </Button>
+                    <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 items-center">
+                      <Button onClick={handleClick} loading={loading} type="bg-green-500">
+                        Approve
+                      </Button>
+                      <Button onClick={handleClick} loading={loading} type="bg-red-500">
+                        Remove
+                      </Button>
+                    </div>
                   </td>
+
                 </tr>
               )
 

@@ -56,7 +56,7 @@ function Contact() {
                     className="w-full p-3 rounded bg-gray-900 text-white focus:outline-none"
                   />
                   <textarea 
-                    rows="10" 
+                    rows="5" 
                     placeholder="Your Message" 
                     className="w-full p-3 rounded bg-gray-900 text-white focus:outline-none"
                   ></textarea>

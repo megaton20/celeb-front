@@ -31,7 +31,7 @@ function Footer() {
             <h2 className="text-xl font-bold text-yellow-500"> Quick Links</h2>
             <ul className="mt-2 space-y-2">
               <li><Link to="/fixtures" className="hover:text-yellow-400">Tournament</Link></li>
-              <li><Link to="/register" className="hover:text-yellow-400">Register</Link></li>
+              <li><Link to="/contest/register" className="hover:text-yellow-400">Register</Link></li>
               <li><Link to="/rankings" className="hover:text-yellow-400">Rankings</Link></li>
             </ul>
           </div>

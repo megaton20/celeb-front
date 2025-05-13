@@ -2,18 +2,26 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-
+import Loader from "../components/Loader"; 
 function Rank() {
   const [contestants, setContestants] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get("http://127.0.0.1:8000/api/contestants/")
+    axios
+     .get("http://localhost:4000/contestants/")
       .then((response) => {
-        const sortedContestants = response.data.sort((a, b) => b.votes - a.votes);
+        const sortedContestants = response.data.data.sort((a, b) => b.vote_count - a.vote_count);
         setContestants(sortedContestants);
+        setLoading(false);
       })
       .catch((error) => console.error("Error fetching contestants:", error));
   }, []);
+
+         // Show loader while data is being fetched
+         if (loading) {
+          return <Loader />;  
+        }
 
   return (
     <div>
@@ -29,7 +37,6 @@ function Rank() {
               <tr className="bg-gray-800 text-yellow-400">
                 <th className="p-3">Rank</th>
                 <th className="p-3">Stage Name</th>
-                <th className="p-3">City</th>
                 <th className="p-3">Votes</th>
               </tr>
             </thead>
@@ -38,8 +45,7 @@ function Rank() {
                 <tr key={contestant.id} className="text-center border-b border-gray-700 hover:bg-gray-800">
                   <td className="p-3 font-bold">{index + 1}</td>
                   <td className="p-3">{contestant.stage_name}</td>
-                  <td className="p-3">{contestant.city}</td>
-                  <td className="p-3 font-bold text-yellow-400">{contestant.votes}</td>
+                  <td className="p-3 font-bold text-yellow-400">{contestant.vote_count}</td>
                 </tr>
               ))}
             </tbody>

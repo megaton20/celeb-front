@@ -7,7 +7,7 @@ import ContestantDetails from "./pages/ContestantDetails";
 
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
-import Friend from "./pages/Friend";
+import BattleDetails from "./pages/BattleDetails";
 import Rank from "./pages/Rank";
 import Fixtures from "./pages/Fixtures";
 import CreateContestant from "./pages/ContestantRegister";
@@ -31,7 +31,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/fixtures" element={<Fixtures />} />
-          <Route path="/friend" element={<Friend />} />
+          <Route path="/fixtures/:id" element={<BattleDetails />} />
           <Route path="/about" element={<About />} />
           <Route path="/rankings" element={<Rank />} />
           <Route path="/contact" element={<Contact />} />

@@ -9,6 +9,12 @@ import Button from "../../components/Button";
 
 function AdminPanel() {
   const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+      
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [loadingRows, setLoadingRows] = useState({}); 
+
   const navigate = useNavigate()
 
       useEffect(() => {
@@ -16,13 +22,24 @@ function AdminPanel() {
           .get("http://localhost:4000/admin/")
           .then((response) => {
             setData(response.data);
+
           })
           .catch(()=> navigate("/auth/login"));
         }, [navigate]);
         
+        const generateMatches = async () => {
+          setLoading(true);
+          setMessage("");
       
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [loadingRows, setLoadingRows] = useState({}); // Track loading per row
+          try {
+            const response = await axios.post("http://localhost:4000/admin/generate-matches");
+            setMessage(response.data.message);
+          } catch (error) {
+            setMessage("Error generating matches.");
+          } finally {
+            setLoading(false);
+          }
+        };
 
   const handleClick = async (name) => {
     setLoadingRows((prev) => ({ ...prev, [name]: true })); // Set loading for clicked row
@@ -86,6 +103,15 @@ function AdminPanel() {
           </div>
         </div>
 
+        <button
+        onClick={generateMatches}
+        disabled={loading}
+        className="px-6 py-3 bg-yellow-500 text-black rounded-lg shadow-lg hover:bg-yellow-600 transition duration-300"
+      >
+        {loading ? "Generating Matches..." : "Generate Match Fixtures"}
+      </button>
+
+      {message && <p className="mt-4 text-yellow-400">{message}</p>}
 
            {/* all Contender Table */}
            <div className="mt-10 overflow-x-auto">
@@ -93,17 +119,17 @@ function AdminPanel() {
           <table className="w-full bg-gray-800 rounded-lg overflow-hidden">
             <thead className="bg-gray-700 text-yellow-400">
               <tr>
-                <th className="py-3 px-6 text-left">Name</th>
+                <th className="py-3 px-6 text-left">Sn</th>
                 <th className="py-3 px-6 text-left">Stage Name</th>
                 <th className="py-3 px-6 text-left">Votes</th>
                 <th className="py-3 px-6 text-left">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {data.allContendersResult.map((contestant) => (
+              {data.allContendersResult.map((contestant, index) => (
                 <tr key={contestant.id} className="border-b border-gray-700">
-                  <td className="py-4 px-6">{contestant.fname} {contestant.lname}</td>
-                  <td className="py-4 px-6">{contestant.stageName}</td>
+                  <td className="py-4 px-6">{index +1}</td>
+                  <td className="py-4 px-6">{contestant.stage_name}</td>
                   <td className="py-4 px-6">{contestant.vote_count}</td>
                   <td className="py-4 px-6">
                     <Button onClick={() => handleClick(contestant.id)} loading={loadingRows[contestant.id]} type={"bg-red-500 w-full"}>
@@ -121,3 +147,5 @@ function AdminPanel() {
 }
 
 export default AdminPanel;
+
+

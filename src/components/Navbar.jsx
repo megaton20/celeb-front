@@ -38,7 +38,7 @@ function Navbar() {
             )}
             { passedUser && (
             <>
-            <Link to="/profile" className="hover:text-blue-200">Profile</Link>
+            {/* <Link to="/profile" className="hover:text-blue-200">Profile</Link> */}
             <Link to="/admin/dashboard" className="hover:text-blue-200">Dashboard</Link>
             </>
 

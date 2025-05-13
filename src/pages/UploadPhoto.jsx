@@ -4,22 +4,35 @@ function UploadPhoto({ formData, setFormData, nextStep, prevStep }) {
   const [previews, setPreviews] = useState(formData.photos || []);
   const [error, setError] = useState("");
 
-  // Handle single file upload
+  // Handle file upload
   const handleFileUpload = (event) => {
     const file = event.target.files[0]; // Get the first file
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setPreviews([reader.result]); // Replace any existing image
-      setFormData({ ...formData, photos: [reader.result] });
-      setError(""); // Clear error message
-    };
-    reader.readAsDataURL(file);
+    // Validate file type (Only allow images)
+    if (!file.type.startsWith("image/")) {
+      setError("Invalid file type. Please upload an image.");
+      return;
+    }
+
+    // Validate file size (Max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setError("File size exceeds 5MB limit.");
+      return;
+    }
+
+    // Create preview URL and update state
+    const objectUrl = URL.createObjectURL(file);
+    setPreviews([objectUrl]);
+    setFormData({ ...formData, photos: [objectUrl] });
+    setError(""); // Clear errors
   };
 
-  // Remove the uploaded image
+  // Remove uploaded image
   const removeImage = () => {
+    if (previews.length > 0) {
+      URL.revokeObjectURL(previews[0]); // Free up memory
+    }
     setPreviews([]);
     setFormData({ ...formData, photos: [] });
   };
@@ -27,7 +40,7 @@ function UploadPhoto({ formData, setFormData, nextStep, prevStep }) {
   return (
     <div className="max-w-lg mx-auto p-6 bg-gray-800 rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold text-white mb-4">Upload Your Photo</h2>
-      <p className="text-gray-300 mb-6">You can upload only 1 image.</p>
+      <p className="text-gray-300 mb-6">You can upload only 1 image (Max: 5MB).</p>
 
       {/* Error Message */}
       {error && <p className="text-red-500 text-sm mb-2">{error}</p>}

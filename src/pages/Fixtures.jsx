@@ -1,88 +1,89 @@
-import React from "react";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
+import Loader from "../components/Loader"; 
+import Navbar from "../components/Navbar"; 
+import Footer from "../components/Footer"; 
 
-const battles = [
-  {
-    id: 1,
-    date: "March 20, 2025",
-    time: "8:00 PM",
-    rapper1: { name: "MC Blaze", ranking: "#1", image: "/images/mc_blaze.jpg" },
-    rapper2: { name: "Lil Storm", ranking: "#3", image: "/images/lil_storm.jpg" },
-  },
-  {
-    id: 2,
-    date: "March 22, 2025",
-    time: "9:00 PM",
-    rapper1: { name: "Drip King", ranking: "#4", image: "/images/drip_king.jpg" },
-    rapper2: { name: "Queen Lyric", ranking: "#2", image: "/images/queen_lyric.jpg" },
-  },
-  {
-    id: 3,
-    date: "March 24, 2025",
-    time: "7:30 PM",
-    rapper1: { name: "Ice Shadow", ranking: "#5", image: "/images/ice_shadow.jpg" },
-    rapper2: { name: "Young Spit", ranking: "#6", image: "/images/young_spit.jpg" },
-  },
-];
+function Fixtures() {
+  const [fixtures, setFixtures] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-function Tournament() {
+  useEffect(() => {
+    axios.get("http://localhost:4000/fixtures/")
+      .then(response => {
+        setFixtures(response.data.data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error("Error fetching fixtures:", error);
+        setLoading(false);
+      });
+  }, []);
+
+  // Show loader while data is being fetched
+  if (loading) {
+    return <Loader />;  
+  }
+
+  if (fixtures.length === 0) {
+    return <div className="text-center text-white mt-10">No match fixtures available.</div>;
+  }
+
   return (
+      <div>
 
-    <div>
-    <Navbar />
+        <Navbar/>
+        <div className="container mx-auto p-8">
 
-    <div className="min-h-screen  p-4 md:p-6 text-gray-800 dark:text-white">
-      <br/>
-      <br/>
-      <br/>
-      <h1 className="text-2xl md:text-3xl font-bold text-yellow-500 text-center mb-4 md:mb-6">
-        Rap Battle Tournament
-      </h1>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
 
-      <div className="space-y-4 md:space-y-6 max-w-3xl mx-auto">
-        {battles.map((battle) => (
-          <div
-            key={battle.id}
-            className=" p-3 md:p-5 rounded-lg shadow-lg flex flex-col sm:flex-row sm:justify-between items-center text-center sm:text-left"
-          >
-            {/* Rapper 1 */}
-            <div className="flex flex-col items-center sm:w-1/4">
-              <img src={battle.rapper1.image} alt={battle.rapper1.image} className="w-16 h-16 md:w-20 md:h-20 rounded-full border-2 md:border-4 border-yellow-500"/>
-              <h2 className="text-lg md:text-xl font-bold mt-2">{battle.rapper1.name}</h2>
-              <p className="text-xs md:text-sm ">{battle.rapper1.ranking}</p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-white">
+            {fixtures.map(match => (
+              <div key={match.id} className="bg-gray-800 p-4 rounded-lg shadow-lg">
 
-            {/* VS in the middle */}
-            <div className="text-2xl md:text-4xl font-extrabold text-red-500 my-3 sm:my-0">
-              VS
-            </div>
+                <div className="flex items-center justify-between">
+                  {/* Contender 1 */}
+                  <div className="flex flex-col items-center">
+                    <img 
+                    src={`http://localhost:4000/uploads/${match.contender1_photo}`} 
+                        alt={match.contender1_name} 
+                        className="w-20 h-20 rounded-full border-2 border-yellow-500 mb-2"/>
+                    <p className="text-lg font-bold">{match.contender1_name}</p>
+                    <p className="text-sm text-gray-400">{match.contender1_stage}</p>
+                  </div>
 
-            {/* Rapper 2 */}
-            <div className="flex flex-col items-center sm:w-1/3">
-              <img
-                src={battle.rapper2.image}
-                alt={battle.rapper1.image}
-                className="w-16 h-16 md:w-20 md:h-20 rounded-full border-2 md:border-4 border-yellow-500"
-              />
-              <h2 className="text-lg md:text-xl font-bold mt-2">{battle.rapper2.name}</h2>
-              <p className="text-xs md:text-sm ">{battle.rapper2.ranking}</p>
-            </div>
+                  <span className="text-2xl text-yellow-400 font-bold">VS</span>
 
-            {/* Date, Time & Venue */}
-            <div className="mt-3 sm:mt-0 sm:w-1/3 text-center sm:text-right">
-              <p className="text-sm md:text-lg">{battle.date}</p>
-              <p className="text-sm md:text-lg">{battle.time}</p>
-              <p className="text-sm md:text-lg">Madison Square Garden</p>
-            </div>
+                  {/* Contender 2 */}
+                  <div className="flex flex-col items-center">
+                    <img src={`http://localhost:4000/uploads/${match.contender2_photo}`} 
+                        alt={match.contender2_name} 
+                        className="w-20 h-20 rounded-full border-2 border-yellow-500 mb-2"/>
+                    <p className="text-lg font-bold">{match.contender2_name}</p>
+                    <p className="text-sm text-gray-400">{match.contender2_stage}</p>
+                  </div>
+                </div>
+
+                {/* Match Date */}
+                <p className="text-center text-gray-300 mt-4">
+                  <strong>Match Date:</strong> {new Date(match.match_date).toLocaleDateString()}
+                </p>
+
+                <Link  to={`/fixtures/${match.id}`} className="mt-4 block px-4 py-2 bg-yellow-500 text-black text-center rounded w-100">
+                  View Details
+                </Link>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-    </div>
+        </div>
 
-    <Footer />
-    </div>
+        <Footer/>
+      </div>
   );
 }
 
-export default Tournament;
+export default Fixtures;
